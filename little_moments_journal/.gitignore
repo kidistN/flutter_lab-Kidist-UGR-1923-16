@@ -1,0 +1,30 @@
+# Flutter/Dart
+.dart_tool/
+.pub/
+.pub-cache/
+build/
+pubspec.lock
+.packages
+*.lock
+
+# IDE
+.idea/
+.vscode/
+*.iml
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Android/iOS/Web builds 
+android/
+ios/
+windows/
+macos/
+linux/
+web/
+
+# Generated files
+*.g.dart
+*.freezed.dart
