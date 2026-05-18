@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import '../../models/quote.dart';
+import '../models/quote.dart';
 
 abstract class QuoteState extends Equatable {
   const QuoteState();
@@ -13,9 +13,8 @@ class QuoteInitialState extends QuoteState {}
 
 // Loading states
 class QuotesLoadingState extends QuoteState {}
-class SavingState extends QuoteState {}
 
-// Loaded states
+// Loaded state
 class QuotesLoadedState extends QuoteState {
   final List<Quote> availableQuotes;
   final List<Quote> savedQuotes;
@@ -27,16 +26,6 @@ class QuotesLoadedState extends QuoteState {
 
   @override
   List<Object?> get props => [availableQuotes, savedQuotes];
-}
-
-// Operation success
-class OperationSuccessState extends QuoteState {
-  final String message;
-
-  const OperationSuccessState(this.message);
-
-  @override
-  List<Object?> get props => [message];
 }
 
 // Error state
