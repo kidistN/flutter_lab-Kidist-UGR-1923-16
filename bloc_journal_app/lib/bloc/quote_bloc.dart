@@ -40,6 +40,8 @@ class QuoteBloc extends Bloc<QuoteEvent, QuoteState> {
     SaveQuoteEvent event,
     Emitter<QuoteState> emit,
   ) async {
+    emit(SavingState());
+    
     final newQuote = Quote(
       id: DateTime.now().millisecondsSinceEpoch.toString(),
       text: event.quote.text,
@@ -54,6 +56,7 @@ class QuoteBloc extends Bloc<QuoteEvent, QuoteState> {
       availableQuotes: _availableQuotes,
       savedQuotes: _savedQuotes,
     ));
+    emit(OperationSuccessState('Added to your journal! ✨'));
   }
 
   Future<void> _onUpdateQuote(
@@ -68,6 +71,7 @@ class QuoteBloc extends Bloc<QuoteEvent, QuoteState> {
         availableQuotes: _availableQuotes,
         savedQuotes: _savedQuotes,
       ));
+      emit(OperationSuccessState('Quote updated!'));
     }
   }
 
@@ -99,6 +103,7 @@ class QuoteBloc extends Bloc<QuoteEvent, QuoteState> {
       availableQuotes: _availableQuotes,
       savedQuotes: _savedQuotes,
     ));
+    emit(OperationSuccessState('Quote deleted'));
   }
 
   Future<void> _onUpdatePersonalNote(
@@ -116,6 +121,7 @@ class QuoteBloc extends Bloc<QuoteEvent, QuoteState> {
         availableQuotes: _availableQuotes,
         savedQuotes: _savedQuotes,
       ));
+      emit(OperationSuccessState('Note updated!'));
     }
   }
 }
