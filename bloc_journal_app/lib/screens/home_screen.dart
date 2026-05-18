@@ -38,34 +38,21 @@ class HomeScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: BlocConsumer<QuoteBloc, QuoteState>(
-        listener: (context, state) {
-          if (state is OperationSuccessState) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.message)),
-            );
-          }
-          if (state is QuoteErrorState) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(state.message),
-                backgroundColor: Colors.red,
-              ),
-            );
-          }
-        },
+      body: BlocBuilder<QuoteBloc, QuoteState>(
         builder: (context, state) {
           if (state is QuotesLoadingState) {
             return const LoadingWidget(message: 'Finding beautiful quotes...');
           }
-          
+
           if (state is QuoteErrorState) {
             return ErrorDisplayWidget(
               message: state.message,
-              onRetry: () => context.read<QuoteBloc>().add(FetchQuotesEvent()),
+              onRetry: () {
+                context.read<QuoteBloc>().add(FetchQuotesEvent());
+              },
             );
           }
-          
+
           if (state is QuotesLoadedState) {
             if (state.availableQuotes.isEmpty) {
               return Center(
@@ -80,7 +67,9 @@ class HomeScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 16),
                     ElevatedButton(
-                      onPressed: () => context.read<QuoteBloc>().add(FetchQuotesEvent()),
+                      onPressed: () {
+                        context.read<QuoteBloc>().add(FetchQuotesEvent());
+                      },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.blueAccent,
                       ),
@@ -90,14 +79,14 @@ class HomeScreen extends StatelessWidget {
                 ),
               );
             }
-            
+
             return ListView.builder(
               padding: const EdgeInsets.all(12),
               itemCount: state.availableQuotes.length,
               itemBuilder: (context, index) {
                 final quote = state.availableQuotes[index];
                 final isSaved = state.savedQuotes.any((q) => q.text == quote.text);
-                
+
                 return Card(
                   margin: const EdgeInsets.only(bottom: 12),
                   elevation: 2,
@@ -177,6 +166,13 @@ class HomeScreen extends StatelessWidget {
                                   context.read<QuoteBloc>().add(
                                     SaveQuoteEvent(quote),
                                   );
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text('Added to your journal! ✨'),
+                                      duration: Duration(seconds: 1),
+                                      backgroundColor: Colors.blueAccent,
+                                    ),
+                                  );
                                 },
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: Colors.blueAccent,
@@ -203,8 +199,8 @@ class HomeScreen extends StatelessWidget {
               },
             );
           }
-          
-          return const SizedBox.shrink();
+
+          return const LoadingWidget(message: 'Loading...');
         },
       ),
       floatingActionButton: FloatingActionButton(
