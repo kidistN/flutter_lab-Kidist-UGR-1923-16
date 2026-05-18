@@ -18,7 +18,10 @@ A Flutter journal app using **BLoC** state management and **Dio** HTTP client.
 - dio (HTTP Client)
 - equatable (Value Equality)
 
-
+API Used
+DummyJSON Quotes API
+Endpoint: https://dummyjson.com/quotes
+Method: GET with Dio
 
 ## Getting Started
 
@@ -34,3 +37,4 @@ flutter pub get
 
 # Run the app
 flutter run
+
