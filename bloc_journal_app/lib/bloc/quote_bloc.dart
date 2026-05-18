@@ -19,7 +19,6 @@ class QuoteBloc extends Bloc<QuoteEvent, QuoteState> {
     on<UpdatePersonalNoteEvent>(_onUpdatePersonalNote);
   }
 
-  // Fetch quotes from API
   Future<void> _onFetchQuotes(
     FetchQuotesEvent event,
     Emitter<QuoteState> emit,
@@ -37,35 +36,26 @@ class QuoteBloc extends Bloc<QuoteEvent, QuoteState> {
     }
   }
 
-  // Save quote to journal
   Future<void> _onSaveQuote(
     SaveQuoteEvent event,
     Emitter<QuoteState> emit,
   ) async {
-    emit(SavingState());
+    final newQuote = Quote(
+      id: DateTime.now().millisecondsSinceEpoch.toString(),
+      text: event.quote.text,
+      author: event.quote.author,
+      savedDate: DateTime.now(),
+      personalNote: event.personalNote,
+    );
     
-    try {
-      final newQuote = Quote(
-        id: DateTime.now().millisecondsSinceEpoch.toString(),
-        text: event.quote.text,
-        author: event.quote.author,
-        savedDate: DateTime.now(),
-        personalNote: event.personalNote,
-      );
-      
-      _savedQuotes.insert(0, newQuote);
-      
-      emit(QuotesLoadedState(
-        availableQuotes: _availableQuotes,
-        savedQuotes: _savedQuotes,
-      ));
-      emit(OperationSuccessState('Added to your journal! ✨'));
-    } catch (e) {
-      emit(QuoteErrorState(e.toString()));
-    }
+    _savedQuotes.insert(0, newQuote);
+    
+    emit(QuotesLoadedState(
+      availableQuotes: _availableQuotes,
+      savedQuotes: _savedQuotes,
+    ));
   }
 
-  // Update quote
   Future<void> _onUpdateQuote(
     UpdateQuoteEvent event,
     Emitter<QuoteState> emit,
@@ -78,11 +68,9 @@ class QuoteBloc extends Bloc<QuoteEvent, QuoteState> {
         availableQuotes: _availableQuotes,
         savedQuotes: _savedQuotes,
       ));
-      emit(OperationSuccessState('Quote updated!'));
     }
   }
 
-  // Toggle favorite
   Future<void> _onToggleFavorite(
     ToggleFavoriteEvent event,
     Emitter<QuoteState> emit,
@@ -101,7 +89,6 @@ class QuoteBloc extends Bloc<QuoteEvent, QuoteState> {
     }
   }
 
-  // Delete quote
   Future<void> _onDeleteQuote(
     DeleteQuoteEvent event,
     Emitter<QuoteState> emit,
@@ -112,10 +99,8 @@ class QuoteBloc extends Bloc<QuoteEvent, QuoteState> {
       availableQuotes: _availableQuotes,
       savedQuotes: _savedQuotes,
     ));
-    emit(OperationSuccessState('Quote deleted'));
   }
 
-  // Update personal note
   Future<void> _onUpdatePersonalNote(
     UpdatePersonalNoteEvent event,
     Emitter<QuoteState> emit,
@@ -131,7 +116,6 @@ class QuoteBloc extends Bloc<QuoteEvent, QuoteState> {
         availableQuotes: _availableQuotes,
         savedQuotes: _savedQuotes,
       ));
-      emit(OperationSuccessState('Note updated!'));
     }
   }
 }
