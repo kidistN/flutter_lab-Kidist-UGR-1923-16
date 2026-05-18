@@ -6,7 +6,6 @@ import '../services/api_service.dart';
 
 class QuoteBloc extends Bloc<QuoteEvent, QuoteState> {
   final ApiService _apiService = ApiService();
-  
   List<Quote> _availableQuotes = [];
   List<Quote> _savedQuotes = [];
 
@@ -24,7 +23,6 @@ class QuoteBloc extends Bloc<QuoteEvent, QuoteState> {
     Emitter<QuoteState> emit,
   ) async {
     emit(QuotesLoadingState());
-    
     try {
       _availableQuotes = await _apiService.fetchQuotes(limit: 15);
       emit(QuotesLoadedState(
@@ -40,8 +38,6 @@ class QuoteBloc extends Bloc<QuoteEvent, QuoteState> {
     SaveQuoteEvent event,
     Emitter<QuoteState> emit,
   ) async {
-    emit(SavingState());
-    
     final newQuote = Quote(
       id: DateTime.now().millisecondsSinceEpoch.toString(),
       text: event.quote.text,
@@ -49,14 +45,11 @@ class QuoteBloc extends Bloc<QuoteEvent, QuoteState> {
       savedDate: DateTime.now(),
       personalNote: event.personalNote,
     );
-    
     _savedQuotes.insert(0, newQuote);
-    
     emit(QuotesLoadedState(
       availableQuotes: _availableQuotes,
       savedQuotes: _savedQuotes,
     ));
-    emit(OperationSuccessState('Added to your journal! ✨'));
   }
 
   Future<void> _onUpdateQuote(
@@ -66,12 +59,10 @@ class QuoteBloc extends Bloc<QuoteEvent, QuoteState> {
     final index = _savedQuotes.indexWhere((q) => q.id == event.quote.id);
     if (index != -1) {
       _savedQuotes[index] = event.quote;
-      
       emit(QuotesLoadedState(
         availableQuotes: _availableQuotes,
         savedQuotes: _savedQuotes,
       ));
-      emit(OperationSuccessState('Quote updated!'));
     }
   }
 
@@ -81,11 +72,9 @@ class QuoteBloc extends Bloc<QuoteEvent, QuoteState> {
   ) async {
     final index = _savedQuotes.indexWhere((q) => q.id == event.quoteId);
     if (index != -1) {
-      final updatedQuote = _savedQuotes[index].copyWith(
+      _savedQuotes[index] = _savedQuotes[index].copyWith(
         isFavorite: !_savedQuotes[index].isFavorite,
       );
-      _savedQuotes[index] = updatedQuote;
-      
       emit(QuotesLoadedState(
         availableQuotes: _availableQuotes,
         savedQuotes: _savedQuotes,
@@ -98,12 +87,10 @@ class QuoteBloc extends Bloc<QuoteEvent, QuoteState> {
     Emitter<QuoteState> emit,
   ) async {
     _savedQuotes.removeWhere((quote) => quote.id == event.quoteId);
-    
     emit(QuotesLoadedState(
       availableQuotes: _availableQuotes,
       savedQuotes: _savedQuotes,
     ));
-    emit(OperationSuccessState('Quote deleted'));
   }
 
   Future<void> _onUpdatePersonalNote(
@@ -112,16 +99,13 @@ class QuoteBloc extends Bloc<QuoteEvent, QuoteState> {
   ) async {
     final index = _savedQuotes.indexWhere((q) => q.id == event.quoteId);
     if (index != -1) {
-      final updatedQuote = _savedQuotes[index].copyWith(
+      _savedQuotes[index] = _savedQuotes[index].copyWith(
         personalNote: event.newNote,
       );
-      _savedQuotes[index] = updatedQuote;
-      
       emit(QuotesLoadedState(
         availableQuotes: _availableQuotes,
         savedQuotes: _savedQuotes,
       ));
-      emit(OperationSuccessState('Note updated!'));
     }
   }
 }
